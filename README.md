@@ -20,7 +20,7 @@ cd cargoflow
 
 - Run the following command to build the project using Gradle.
 ```bash
-./gradlew build
+./gradlew build -x test
 ```
 
 - Once the project is built successfully, you can use Docker Compose to set up and run the application along with its dependencies.
