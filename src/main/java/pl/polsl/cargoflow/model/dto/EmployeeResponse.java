@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.polsl.cargoflow.model.Employee;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class EmployeeResponse {
