@@ -1,7 +1,6 @@
 package pl.polsl.cargoflow.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.cargoflow.model.dto.DrivingLicenseRequest;
 
 @Entity
 @NoArgsConstructor
@@ -26,4 +26,8 @@ public class DrivingLicense {
 
     @ManyToMany(mappedBy = "driverLicenses")
     private List<Employee> employees;
+
+    public DrivingLicense(DrivingLicenseRequest drivingLicenseRequest) {
+        this.name = drivingLicenseRequest.getName();
+    }
 }

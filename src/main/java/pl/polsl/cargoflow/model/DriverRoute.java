@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.cargoflow.model.dto.DriverRouteRequest;
 
 @Entity
 @NoArgsConstructor
@@ -41,4 +42,13 @@ public class DriverRoute {
     @ManyToOne
     @NotNull
     private Route route;
+
+    public DriverRoute(DriverRouteRequest driverRouteRequest, Employee employee, Vehicle vehicle, Route route) {
+        this.departureDate = driverRouteRequest.getDepartureDate();
+        this.arrivalDate = driverRouteRequest.getArrivalDate();
+        this.cargoDescription = driverRouteRequest.getCargoDescription();
+        this.employee = employee;
+        this.vehicle = vehicle;
+        this.route = route;
+    }
 }

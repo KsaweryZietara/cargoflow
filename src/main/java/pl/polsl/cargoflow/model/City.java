@@ -1,7 +1,6 @@
 package pl.polsl.cargoflow.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.cargoflow.model.dto.CityRequest;
 
 @Entity
 @NoArgsConstructor
@@ -29,4 +29,8 @@ public class City {
 
     @OneToMany(mappedBy = "arrivalCity")
     private List<Route> arrivalRoute;
+
+    public City(CityRequest cityRequest) {
+        this.name = cityRequest.getName();
+    }
 }

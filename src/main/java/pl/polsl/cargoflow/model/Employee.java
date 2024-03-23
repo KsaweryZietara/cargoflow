@@ -2,7 +2,6 @@ package pl.polsl.cargoflow.model;
 
 import java.sql.Date;
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +15,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.cargoflow.model.dto.EmployeeRequest;
 
 @Entity
 @NoArgsConstructor
@@ -46,5 +46,15 @@ public class Employee {
     private List<DrivingLicense> driverLicenses;
 
     @OneToMany(mappedBy = "employee")
-    private List<DriverRoute> driverRoute;
+    private List<DriverRoute> driverRoutes;
+
+    public Employee(EmployeeRequest employeeRequest, Position position, List<DrivingLicense> drivingLicenses, List<DriverRoute> driverRoutes) {
+        this.name = employeeRequest.getName();
+        this.surname = employeeRequest.getSurname();
+        this.pesel = employeeRequest.getPesel();
+        this.birthDate = employeeRequest.getBirthDate();
+        this.position = position;
+        this.driverLicenses = drivingLicenses;
+        this.driverRoutes = driverRoutes;
+    }
 }

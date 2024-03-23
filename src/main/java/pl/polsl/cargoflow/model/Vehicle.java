@@ -1,7 +1,6 @@
 package pl.polsl.cargoflow.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.cargoflow.model.dto.VehicleRequest;
 
 @Entity
 @NoArgsConstructor
@@ -43,4 +43,12 @@ public class Vehicle {
     
     @OneToMany(mappedBy = "vehicle")
     private List<DriverRoute> driverRoute;
+
+    public Vehicle(VehicleRequest vehicleRequest) {
+        this.type = vehicleRequest.getType();
+        this.engineNumber = vehicleRequest.getEngineNumber();
+        this.engineCapacity = vehicleRequest.getEngineCapacity();
+        this.brand = vehicleRequest.getBrand();
+        this.maximumCapacity = vehicleRequest.getMaximumCapacity();
+    }
 }

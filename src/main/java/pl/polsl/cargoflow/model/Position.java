@@ -1,7 +1,6 @@
 package pl.polsl.cargoflow.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.cargoflow.model.dto.PositionRequest;
 
 @Entity
 @NoArgsConstructor
@@ -27,4 +27,8 @@ public class Position {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "position")
     private List<Employee> employees;
+
+    public Position(PositionRequest positionRequest) {
+        this.name = positionRequest.getName();
+    }
 }
