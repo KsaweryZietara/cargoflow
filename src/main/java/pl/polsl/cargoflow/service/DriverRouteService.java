@@ -3,6 +3,7 @@ package pl.polsl.cargoflow.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.cargoflow.model.DriverRoute;
 import pl.polsl.cargoflow.model.Employee;
 import pl.polsl.cargoflow.model.Route;
@@ -42,6 +43,13 @@ public class DriverRouteService {
 
     public List<DriverRouteResponse> getAll() {
         return driverRouteRepo.findAll()
+                .stream()
+                .map(DriverRouteResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<DriverRouteResponse> getAllByEmployee(Employee employee) {
+        return driverRouteRepo.findAllByEmployee(employee)
                 .stream()
                 .map(DriverRouteResponse::new)
                 .collect(Collectors.toList());
@@ -89,5 +97,10 @@ public class DriverRouteService {
 
     public void delete(Long id) {
         driverRouteRepo.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteByEmployee(Long id, Employee employee) {
+        driverRouteRepo.deleteByIdAndEmployee(id, employee);
     }
 }

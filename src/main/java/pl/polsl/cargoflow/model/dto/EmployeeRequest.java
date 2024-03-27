@@ -19,6 +19,10 @@ public class EmployeeRequest {
     private String pesel;
 
     private Date birthDate;
+
+    private String login;
+
+    private String password;
     
     private Long positionId;
 

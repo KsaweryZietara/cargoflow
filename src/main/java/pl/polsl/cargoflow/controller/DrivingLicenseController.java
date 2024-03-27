@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import pl.polsl.cargoflow.model.dto.DrivingLicenseRequest;
 import pl.polsl.cargoflow.model.dto.DrivingLicenseResponse;
+import pl.polsl.cargoflow.model.exception.UnauthorizedException;
 import pl.polsl.cargoflow.service.AuthService;
 import pl.polsl.cargoflow.service.DrivingLicenseService;
 import java.util.List;
@@ -25,35 +26,50 @@ public class DrivingLicenseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DrivingLicenseResponse> getDrivingLicenseById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         DrivingLicenseResponse drivingLicenseResponse = drivingLicenseService.getById(id);
         return ResponseEntity.ok(drivingLicenseResponse);
     }
 
     @GetMapping
     public ResponseEntity<List<DrivingLicenseResponse>> getAllDrivingLicenses(@RequestHeader("Authorization") String authHeader) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         List<DrivingLicenseResponse> drivingLicenseResponses = drivingLicenseService.getAll();
         return ResponseEntity.ok(drivingLicenseResponses);
     }
 
     @PostMapping
     public ResponseEntity<DrivingLicenseResponse> createDrivingLicense(@RequestHeader("Authorization") String authHeader, @RequestBody DrivingLicenseRequest drivingLicenseRequest) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         DrivingLicenseResponse drivingLicenseResponse = drivingLicenseService.save(drivingLicenseRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(drivingLicenseResponse);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DrivingLicenseResponse> updateDrivingLicense(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody DrivingLicenseRequest drivingLicenseRequest) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         DrivingLicenseResponse drivingLicenseResponse = drivingLicenseService.update(id, drivingLicenseRequest);
         return ResponseEntity.ok(drivingLicenseResponse);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDrivingLicense(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         drivingLicenseService.delete(id);
         return ResponseEntity.noContent().build();
     }

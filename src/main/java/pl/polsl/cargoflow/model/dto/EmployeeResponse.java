@@ -24,11 +24,11 @@ public class EmployeeResponse {
 
     private Date birthDate;
 
+    private String login;
+
     private PositionResponse position;
 
     private List<DrivingLicenseResponse> driverLicenses;
-
-    private List<DriverRouteResponse> driverRoutes;
 
     public EmployeeResponse(Employee employee) {
         this.id = employee.getId();
@@ -36,8 +36,8 @@ public class EmployeeResponse {
         this.surname = employee.getSurname();
         this.pesel = employee.getPesel();
         this.birthDate = employee.getBirthDate();
+        this.login = employee.getLogin();
         this.position = new PositionResponse(employee.getPosition());
         this.driverLicenses = employee.getDriverLicenses().stream().map(DrivingLicenseResponse::new).collect(Collectors.toList());
-        this.driverRoutes = employee.getDriverRoutes().stream().map(DriverRouteResponse::new).collect(Collectors.toList());
     }
 }

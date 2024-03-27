@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import pl.polsl.cargoflow.model.dto.CityRequest;
 import pl.polsl.cargoflow.model.dto.CityResponse;
+import pl.polsl.cargoflow.model.exception.UnauthorizedException;
 import pl.polsl.cargoflow.service.AuthService;
 import pl.polsl.cargoflow.service.CityService;
 
@@ -33,35 +34,50 @@ public class CityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CityResponse> getCityById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         CityResponse cityResponse = cityService.getById(id);
         return ResponseEntity.ok(cityResponse);
     }
 
     @GetMapping
     public ResponseEntity<List<CityResponse>> getAllCities(@RequestHeader("Authorization") String authHeader) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         List<CityResponse> cityResponses = cityService.getAll();
         return ResponseEntity.ok(cityResponses);
     }
 
     @PostMapping
     public ResponseEntity<CityResponse> createCity(@RequestHeader("Authorization") String authHeader, @RequestBody CityRequest cityRequest) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         CityResponse cityResponse = cityService.save(cityRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(cityResponse);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CityResponse> updateCity(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody CityRequest cityRequest) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         CityResponse cityResponse = cityService.update(id, cityRequest);
         return ResponseEntity.ok(cityResponse);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCity(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        authService.authenticate(authHeader);
+        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
+        if (!isAuthenticated) {
+            throw new UnauthorizedException();
+        }
         cityService.delete(id);
         return ResponseEntity.noContent().build();
     }

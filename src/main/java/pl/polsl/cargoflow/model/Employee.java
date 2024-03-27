@@ -3,6 +3,7 @@ package pl.polsl.cargoflow.model;
 import java.sql.Date;
 import java.util.List;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +16,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.cargoflow.config.PasswordEncoder;
 import pl.polsl.cargoflow.model.dto.EmployeeRequest;
 
 @Entity
@@ -38,6 +40,10 @@ public class Employee {
 
     private Date birthDate;
 
+    private String login;
+
+    private String password;
+
     @ManyToOne
     @NotNull
     private Position position;
@@ -45,7 +51,7 @@ public class Employee {
     @ManyToMany
     private List<DrivingLicense> driverLicenses;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     private List<DriverRoute> driverRoutes;
 
     public Employee(EmployeeRequest employeeRequest, Position position, List<DrivingLicense> drivingLicenses, List<DriverRoute> driverRoutes) {
@@ -53,6 +59,8 @@ public class Employee {
         this.surname = employeeRequest.getSurname();
         this.pesel = employeeRequest.getPesel();
         this.birthDate = employeeRequest.getBirthDate();
+        this.login = employeeRequest.getLogin();
+        this.password = PasswordEncoder.encodePassword(employeeRequest.getPassword());
         this.position = position;
         this.driverLicenses = drivingLicenses;
         this.driverRoutes = driverRoutes;
