@@ -1,7 +1,6 @@
 package pl.polsl.cargoflow.model.dto;
 
 import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,14 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class DriverRouteEmployeeRequest {
-    private LocalDateTime departureDate;
+public class CompleteDriverRouteRequest {
+    private LocalDateTime actualDepartureDate;
 
-    private LocalDateTime arrivalDate;
-    
-    private String cargoDescription;
+    private LocalDateTime actualArrivalDate;
 
-    private Long vehicleId;
-
-    private Long routeId;
+    private String comments;
 }

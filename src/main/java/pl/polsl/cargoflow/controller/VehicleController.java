@@ -27,8 +27,11 @@ public class VehicleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<VehicleResponse> getVehicleById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("mechanik")) {
             throw new UnauthorizedException();
         }
         VehicleResponse vehicleResponse = vehicleService.getById(id);
@@ -37,20 +40,24 @@ public class VehicleController {
 
     @GetMapping
     public ResponseEntity<List<VehicleResponse>> getAllVehicles(@RequestHeader("Authorization") String authHeader) {
-        boolean isAdmin = authService.authenticateAdmin(authHeader);
         Employee employee = authService.authenticateEmployee(authHeader);
-        if (!isAdmin && employee == null) {
+        if (employee == null) {
             throw new UnauthorizedException();
         }
-        authService.authenticateAdmin(authHeader);
+        if (!employee.getPosition().getName().equals("mechanik") && !employee.getPosition().getName().equals("koordynator")) {
+            throw new UnauthorizedException();
+        }
         List<VehicleResponse> vehicleResponses = vehicleService.getAll();
         return ResponseEntity.ok(vehicleResponses);
     }
 
     @PostMapping
     public ResponseEntity<VehicleResponse> createVehicle(@RequestHeader("Authorization") String authHeader, @RequestBody VehicleRequest vehicleRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("mechanik")) {
             throw new UnauthorizedException();
         }
         VehicleResponse vehicleResponse = vehicleService.save(vehicleRequest);
@@ -59,8 +66,11 @@ public class VehicleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<VehicleResponse> updateVehicle(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody VehicleRequest vehicleRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("mechanik")) {
             throw new UnauthorizedException();
         }
         VehicleResponse vehicleResponse = vehicleService.update(id, vehicleRequest);
@@ -69,8 +79,11 @@ public class VehicleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVehicle(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("mechanik")) {
             throw new UnauthorizedException();
         }
         vehicleService.delete(id);

@@ -1,5 +1,6 @@
 package pl.polsl.cargoflow.model;
 
+import java.sql.Date;
 import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,6 +41,10 @@ public class Vehicle {
 
     @Min(0)
     private Double maximumCapacity;
+
+    private boolean operational;
+
+    private Date nextTechnicalInspection;
     
     @OneToMany(mappedBy = "vehicle")
     private List<DriverRoute> driverRoute;
@@ -50,5 +55,7 @@ public class Vehicle {
         this.engineCapacity = vehicleRequest.getEngineCapacity();
         this.brand = vehicleRequest.getBrand();
         this.maximumCapacity = vehicleRequest.getMaximumCapacity();
+        this.operational = vehicleRequest.isOperational();
+        this.nextTechnicalInspection = vehicleRequest.getNextTechnicalInspection();
     }
 }

@@ -26,11 +26,23 @@ public class DriverRouteResponse {
 
     private RouteResponse route;
 
+    private boolean completed;
+
+    private LocalDateTime actualDepartureDate;
+
+    private LocalDateTime actualArrivalDate;
+
+    private String comments;
+
     public DriverRouteResponse(DriverRoute driverRoute) {
         this.id = driverRoute.getId();
         this.departureDate = driverRoute.getDepartureDate();
         this.arrivalDate = driverRoute.getArrivalDate();
         this.cargoDescription = driverRoute.getCargoDescription();
+        this.completed = driverRoute.isCompleted();
+        this.actualDepartureDate = driverRoute.getActualDepartureDate();
+        this.actualArrivalDate = driverRoute.getActualArrivalDate();
+        this.comments = driverRoute.getComments();
         this.employee = new EmployeeResponse(driverRoute.getEmployee());
         this.vehicle = new VehicleResponse(driverRoute.getVehicle());
         this.route = new RouteResponse(driverRoute.getRoute());

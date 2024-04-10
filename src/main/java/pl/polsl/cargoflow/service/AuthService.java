@@ -2,10 +2,10 @@ package pl.polsl.cargoflow.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import pl.polsl.cargoflow.config.PasswordEncoder;
+import pl.polsl.cargoflow.model.Credentials;
 import pl.polsl.cargoflow.model.Employee;
-import pl.polsl.cargoflow.repo.EmployeeRepo;
+import pl.polsl.cargoflow.repo.CredentialsRepo;
 import java.util.Base64;
 import java.util.List;
 
@@ -18,10 +18,10 @@ public class AuthService {
     @Value("${ADMIN_PASSWORD}")
     private String adminPassword;
 
-    private EmployeeRepo employeeRepo;
+    private CredentialsRepo credentialsRepo;
 
-    public AuthService(EmployeeRepo employeeRepo) {
-        this.employeeRepo = employeeRepo;
+    public AuthService(CredentialsRepo credentialsRepo) {
+        this.credentialsRepo = credentialsRepo;
     }
 
     public boolean authenticateAdmin(String authorizationHeader) {
@@ -40,11 +40,11 @@ public class AuthService {
         if (credentials.length == 0) {
             return null;
         }
-        List<Employee> employees = employeeRepo.findByLoginAndPassword(credentials[0], PasswordEncoder.encodePassword(credentials[1]));
-        if (employees.isEmpty()) {
+        List<Credentials> credentialsList = credentialsRepo.findByLoginAndPassword(credentials[0], PasswordEncoder.encodePassword(credentials[1]));
+        if (credentialsList.isEmpty()) {
             return null;
         }
-        return employees.getFirst();
+        return credentialsList.getFirst().getEmployee();
     }
 
     private String[] authenticate(String authorizationHeader) {

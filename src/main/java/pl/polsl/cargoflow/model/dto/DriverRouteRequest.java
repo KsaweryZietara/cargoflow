@@ -22,13 +22,4 @@ public class DriverRouteRequest {
     private Long vehicleId;
 
     private Long routeId;
-
-    public DriverRouteRequest(DriverRouteEmployeeRequest driverRouteEmployeeRequest, Long employeeId) {
-        this.departureDate = driverRouteEmployeeRequest.getDepartureDate();
-        this.arrivalDate = driverRouteEmployeeRequest.getArrivalDate();
-        this.cargoDescription = driverRouteEmployeeRequest.getCargoDescription();
-        this.employeeId = employeeId;
-        this.vehicleId = driverRouteEmployeeRequest.getVehicleId();
-        this.routeId = driverRouteEmployeeRequest.getRouteId();
-    }
 }

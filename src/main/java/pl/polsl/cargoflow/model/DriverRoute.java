@@ -31,6 +31,14 @@ public class DriverRoute {
     @NotBlank
     private String cargoDescription;
 
+    private boolean completed = false;
+
+    private LocalDateTime actualDepartureDate;
+
+    private LocalDateTime actualArrivalDate;
+
+    private String comments;
+
     @ManyToOne
     @NotNull
     private Employee employee;

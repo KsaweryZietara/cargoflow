@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.polsl.cargoflow.model.dto.CreateRoute;
+import pl.polsl.cargoflow.model.dto.RouteRequest;
 
 @Entity
 @NoArgsConstructor
@@ -37,7 +37,7 @@ public class Route {
     @OneToMany(mappedBy = "route")
     private List<DriverRoute> driverRoute;
 
-    public Route(CreateRoute createRoute, City departureCity, City arrivalCity) {
+    public Route(RouteRequest createRoute, City departureCity, City arrivalCity) {
         this.distance = createRoute.getDistance();
         this.departureCity = departureCity;
         this.arrivalCity = arrivalCity;

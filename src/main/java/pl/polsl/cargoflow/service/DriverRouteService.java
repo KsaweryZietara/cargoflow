@@ -3,12 +3,13 @@ package pl.polsl.cargoflow.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.cargoflow.model.DriverRoute;
 import pl.polsl.cargoflow.model.Employee;
 import pl.polsl.cargoflow.model.Route;
 import pl.polsl.cargoflow.model.Vehicle;
 import pl.polsl.cargoflow.model.dto.DriverRouteResponse;
+import pl.polsl.cargoflow.model.exception.UnauthorizedException;
+import pl.polsl.cargoflow.model.dto.CompleteDriverRouteRequest;
 import pl.polsl.cargoflow.model.dto.DriverRouteRequest;
 import pl.polsl.cargoflow.repo.DriverRouteRepo;
 import pl.polsl.cargoflow.repo.EmployeeRepo;
@@ -62,6 +63,9 @@ public class DriverRouteService {
         Vehicle vehicle = vehicleRepo.findById(driverRouteRequest.getVehicleId()).orElseThrow(() -> 
             new RuntimeException("Vehicle with id " + driverRouteRequest.getVehicleId() + " not found")
         );
+        if (!vehicle.isOperational()) {
+            throw new RuntimeException("Vehicle with id " + driverRouteRequest.getVehicleId() + " is not operational");
+        }
         Route route = routeRepo.findById(driverRouteRequest.getRouteId()).orElseThrow(() -> 
             new RuntimeException("Route with id " + driverRouteRequest.getRouteId() + " not found")
         );
@@ -95,12 +99,22 @@ public class DriverRouteService {
                 );
     }
 
-    public void delete(Long id) {
-        driverRouteRepo.deleteById(id);
+    public DriverRouteResponse completeDriverRoute(Long driverRouteId, Long employeeId, CompleteDriverRouteRequest request) {
+        DriverRoute driverRoute = driverRouteRepo.findById(driverRouteId).orElseThrow(() -> 
+            new RuntimeException("Driver route with id " + driverRouteId + " not found")
+        );
+        if (driverRoute.getEmployee().getId() != employeeId) {
+            throw new UnauthorizedException();
+        }
+        driverRoute.setCompleted(true);
+        driverRoute.setActualArrivalDate(request.getActualArrivalDate());
+        driverRoute.setActualDepartureDate(request.getActualDepartureDate());
+        driverRoute.setComments(request.getComments());
+        DriverRoute savedDriverRoute = driverRouteRepo.save(driverRoute);
+        return new DriverRouteResponse(savedDriverRoute);
     }
 
-    @Transactional
-    public void deleteByEmployee(Long id, Employee employee) {
-        driverRouteRepo.deleteByIdAndEmployee(id, employee);
+    public void delete(Long id) {
+        driverRouteRepo.deleteById(id);
     }
 }

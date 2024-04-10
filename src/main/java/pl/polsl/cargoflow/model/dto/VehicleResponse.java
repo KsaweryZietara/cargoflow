@@ -1,5 +1,6 @@
 package pl.polsl.cargoflow.model.dto;
 
+import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,10 @@ public class VehicleResponse {
 
     private Double maximumCapacity;
 
+    private boolean operational;
+
+    private Date nextTechnicalInspection;
+
     public VehicleResponse(Vehicle vehicle) {
         this.id = vehicle.getId();
         this.type = vehicle.getType();
@@ -31,5 +36,7 @@ public class VehicleResponse {
         this.engineCapacity = vehicle.getEngineCapacity();
         this.brand = vehicle.getBrand();
         this.maximumCapacity = vehicle.getMaximumCapacity();
+        this.operational = vehicle.isOperational();
+        this.nextTechnicalInspection = vehicle.getNextTechnicalInspection();
     }
 }

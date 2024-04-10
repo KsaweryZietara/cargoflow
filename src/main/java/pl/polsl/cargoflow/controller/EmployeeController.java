@@ -47,11 +47,20 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<List<EmployeeResponse>> getAllEmployees(@RequestHeader("Authorization") String authHeader) {
         boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
-            throw new UnauthorizedException();
+        if (isAuthenticated) {
+            List<EmployeeResponse> employeeResponses = employeeService.getAll();
+            return ResponseEntity.ok(employeeResponses);
         }
-        List<EmployeeResponse> employeeResponses = employeeService.getAll();
-        return ResponseEntity.ok(employeeResponses);
+
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee != null) {
+            if (employee.getPosition().getName().equals("koordynator")) {
+                List<EmployeeResponse> employeeResponses = employeeService.getAll();
+                return ResponseEntity.ok(employeeResponses);
+            }
+        }
+        
+        throw new UnauthorizedException();
     }
 
     @PostMapping

@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateRoute {
+public class RouteRequest {
     private Long departureCityId;
 
     private Long arrivalCityId;

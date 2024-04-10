@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.polsl.cargoflow.model.City;
 import pl.polsl.cargoflow.model.Route;
 import pl.polsl.cargoflow.model.dto.RouteResponse;
-import pl.polsl.cargoflow.model.dto.CreateRoute;
+import pl.polsl.cargoflow.model.dto.RouteRequest;
 import pl.polsl.cargoflow.repo.CityRepo;
 import pl.polsl.cargoflow.repo.RouteRepo;
 
@@ -35,7 +35,7 @@ public class RouteService {
                 .collect(Collectors.toList());
     }
 
-    public RouteResponse save(CreateRoute createRoute) {
+    public RouteResponse save(RouteRequest createRoute) {
         City departureCity = cityRepo.findById(createRoute.getDepartureCityId()).orElseThrow(() -> 
             new RuntimeException("City with id " + createRoute.getDepartureCityId() + " not found")
         );
@@ -46,7 +46,7 @@ public class RouteService {
         return new RouteResponse(route);
     }
 
-    public RouteResponse update(Long id, CreateRoute createRoute) {
+    public RouteResponse update(Long id, RouteRequest createRoute) {
         City departureCity = cityRepo.findById(createRoute.getDepartureCityId()).orElseThrow(() -> 
             new RuntimeException("City with id " + createRoute.getDepartureCityId() + " not found")
         );

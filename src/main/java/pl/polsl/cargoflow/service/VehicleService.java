@@ -44,6 +44,8 @@ public class VehicleService {
                     vehicle.setEngineCapacity(vehicleRequest.getEngineCapacity());
                     vehicle.setBrand(vehicleRequest.getBrand());
                     vehicle.setMaximumCapacity(vehicleRequest.getMaximumCapacity());
+                    vehicle.setOperational(vehicleRequest.isOperational());
+                    vehicle.setNextTechnicalInspection(vehicleRequest.getNextTechnicalInspection());
                     return vehicleRepo.save(vehicle);
                 })
                 .map(VehicleResponse::new)

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import pl.polsl.cargoflow.model.Employee;
-import pl.polsl.cargoflow.model.dto.DriverRouteEmployeeRequest;
+import pl.polsl.cargoflow.model.dto.CompleteDriverRouteRequest;
 import pl.polsl.cargoflow.model.dto.DriverRouteRequest;
 import pl.polsl.cargoflow.model.dto.DriverRouteResponse;
 import pl.polsl.cargoflow.model.exception.UnauthorizedException;
@@ -28,8 +28,11 @@ public class DriverRouteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DriverRouteResponse> getDriverRouteById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         DriverRouteResponse driverRouteResponse = driverRouteService.getById(id);
@@ -38,8 +41,11 @@ public class DriverRouteController {
 
     @GetMapping
     public ResponseEntity<List<DriverRouteResponse>> getAllDriverRoutes(@RequestHeader("Authorization") String authHeader) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         List<DriverRouteResponse> driverRouteResponses = driverRouteService.getAll();
@@ -48,8 +54,11 @@ public class DriverRouteController {
 
     @PostMapping
     public ResponseEntity<DriverRouteResponse> createDriverRoute(@RequestHeader("Authorization") String authHeader, @RequestBody DriverRouteRequest driverRouteRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         DriverRouteResponse driverRouteResponse = driverRouteService.save(driverRouteRequest);
@@ -58,8 +67,11 @@ public class DriverRouteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<DriverRouteResponse> updateDriverRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody DriverRouteRequest driverRouteRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         DriverRouteResponse driverRouteResponse = driverRouteService.update(id, driverRouteRequest);
@@ -68,8 +80,11 @@ public class DriverRouteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDriverRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         driverRouteService.delete(id);
@@ -82,37 +97,23 @@ public class DriverRouteController {
         if (employee == null) {
             throw new UnauthorizedException();
         }
+        if (!employee.getPosition().getName().equals("kierowca")) {
+            throw new UnauthorizedException();
+        }
         List<DriverRouteResponse> driverRouteResponses = driverRouteService.getAllByEmployee(employee);
         return ResponseEntity.ok(driverRouteResponses);
     }
 
-    @PostMapping("/employee")
-    public ResponseEntity<DriverRouteResponse> createDriverRouteByEmployee(@RequestHeader("Authorization") String authHeader, @RequestBody DriverRouteEmployeeRequest driverRouteRequest) {
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<DriverRouteResponse> completeDriverRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody CompleteDriverRouteRequest request) {
         Employee employee = authService.authenticateEmployee(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        DriverRouteResponse driverRouteResponse = driverRouteService.save(new DriverRouteRequest(driverRouteRequest, employee.getId()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(driverRouteResponse);
-    }
-
-    @PutMapping("/{id}/employee")
-    public ResponseEntity<DriverRouteResponse> updateDriverRouteByEmployee(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody DriverRouteEmployeeRequest driverRouteRequest) {
-        Employee employee = authService.authenticateEmployee(authHeader);
-        if (employee == null) {
+        if (!employee.getPosition().getName().equals("kierowca")) {
             throw new UnauthorizedException();
         }
-        DriverRouteResponse driverRouteResponse = driverRouteService.update(id, new DriverRouteRequest(driverRouteRequest, employee.getId()));
+        DriverRouteResponse driverRouteResponse = driverRouteService.completeDriverRoute(id, employee.getId(), request);
         return ResponseEntity.ok(driverRouteResponse);
-    }
-
-    @DeleteMapping("/{id}/employee")
-    public ResponseEntity<Void> deleteDriverRouteByEmployee(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        Employee employee = authService.authenticateEmployee(authHeader);
-        if (employee == null) {
-            throw new UnauthorizedException();
-        }
-        driverRouteService.deleteByEmployee(id, employee);
-        return ResponseEntity.noContent().build();
     }
 }

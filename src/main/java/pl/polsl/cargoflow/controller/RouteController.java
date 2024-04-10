@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import pl.polsl.cargoflow.model.Employee;
-import pl.polsl.cargoflow.model.dto.CreateRoute;
+import pl.polsl.cargoflow.model.dto.RouteRequest;
 import pl.polsl.cargoflow.model.dto.RouteResponse;
 import pl.polsl.cargoflow.model.exception.UnauthorizedException;
 import pl.polsl.cargoflow.service.AuthService;
@@ -27,8 +27,11 @@ public class RouteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RouteResponse> getRouteById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         RouteResponse routeResponse = routeService.getById(id);
@@ -37,9 +40,11 @@ public class RouteController {
 
     @GetMapping
     public ResponseEntity<List<RouteResponse>> getAllRoutes(@RequestHeader("Authorization") String authHeader) {
-        boolean isAdmin = authService.authenticateAdmin(authHeader);
         Employee employee = authService.authenticateEmployee(authHeader);
-        if (!isAdmin && employee == null) {
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         List<RouteResponse> routeResponses = routeService.getAll();
@@ -47,9 +52,12 @@ public class RouteController {
     }
 
     @PostMapping
-    public ResponseEntity<RouteResponse> createRoute(@RequestHeader("Authorization") String authHeader, @RequestBody CreateRoute createRoute) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+    public ResponseEntity<RouteResponse> createRoute(@RequestHeader("Authorization") String authHeader, @RequestBody RouteRequest createRoute) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         RouteResponse routeResponse = routeService.save(createRoute);
@@ -57,9 +65,12 @@ public class RouteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RouteResponse> updateRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody CreateRoute createRoute) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+    public ResponseEntity<RouteResponse> updateRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody RouteRequest createRoute) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         RouteResponse routeResponse = routeService.update(id, createRoute);
@@ -68,8 +79,11 @@ public class RouteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         routeService.delete(id);

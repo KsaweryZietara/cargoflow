@@ -1,5 +1,6 @@
 package pl.polsl.cargoflow.model.dto;
 
+import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,8 @@ public class VehicleRequest {
     private String brand;
 
     private Double maximumCapacity;
+
+    private boolean operational = true;
+
+    private Date nextTechnicalInspection;
 }

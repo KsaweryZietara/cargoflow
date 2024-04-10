@@ -3,7 +3,7 @@ package pl.polsl.cargoflow.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import pl.polsl.cargoflow.config.PasswordEncoder;
+import pl.polsl.cargoflow.model.Credentials;
 import pl.polsl.cargoflow.model.DriverRoute;
 import pl.polsl.cargoflow.model.DrivingLicense;
 import pl.polsl.cargoflow.model.Employee;
@@ -86,8 +86,7 @@ public class EmployeeService {
                     employee.setSurname(employeeRequest.getSurname());
                     employee.setPesel(employeeRequest.getPesel());
                     employee.setBirthDate(employeeRequest.getBirthDate());
-                    employee.setLogin(employeeRequest.getLogin());
-                    employee.setPassword(PasswordEncoder.encodePassword(employeeRequest.getPassword()));
+                    employee.setCredentials(new Credentials(employeeRequest.getLogin(), employeeRequest.getPassword()));
                     employee.setPosition(position);
                     employee.setDriverLicenses(drivingLicenses);
                     employee.setDriverRoutes(driverRoutes);

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import pl.polsl.cargoflow.model.Employee;
 import pl.polsl.cargoflow.model.dto.CityRequest;
 import pl.polsl.cargoflow.model.dto.CityResponse;
 import pl.polsl.cargoflow.model.exception.UnauthorizedException;
@@ -34,8 +35,11 @@ public class CityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CityResponse> getCityById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         CityResponse cityResponse = cityService.getById(id);
@@ -44,8 +48,11 @@ public class CityController {
 
     @GetMapping
     public ResponseEntity<List<CityResponse>> getAllCities(@RequestHeader("Authorization") String authHeader) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         List<CityResponse> cityResponses = cityService.getAll();
@@ -54,8 +61,11 @@ public class CityController {
 
     @PostMapping
     public ResponseEntity<CityResponse> createCity(@RequestHeader("Authorization") String authHeader, @RequestBody CityRequest cityRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         CityResponse cityResponse = cityService.save(cityRequest);
@@ -64,8 +74,11 @@ public class CityController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CityResponse> updateCity(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody CityRequest cityRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         CityResponse cityResponse = cityService.update(id, cityRequest);
@@ -74,8 +87,11 @@ public class CityController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCity(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticateEmployee(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("koordynator")) {
             throw new UnauthorizedException();
         }
         cityService.delete(id);
