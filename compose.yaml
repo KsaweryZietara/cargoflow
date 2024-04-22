@@ -1,6 +1,6 @@
 services:
   backend:
-    build: .
+    image: ghcr.io/ksaweryzietara/cargoflow:latest
     container_name: backend
     depends_on:
       - postgres

@@ -8,7 +8,6 @@ reports like monthly route summaries and mileage analysis for both employees and
 
 ## Prerequisites
 - [Git](https://git-scm.com/downloads)
-- [Java 21](https://adoptium.net/temurin/releases/?version=21)
 - [Docker](https://docs.docker.com/get-docker/)
 
 ## Installation
@@ -18,19 +17,14 @@ git clone https://github.com/KsaweryZietara/cargoflow.git
 cd cargoflow
 ```
 
-- Run the following command to build the project using Gradle.
+- Use Docker Compose to set up and run the application along with its dependencies.
 ```bash
-./gradlew build
-```
-
-- Once the project is built successfully, you can use Docker Compose to set up and run the application along with its dependencies.
-```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 - To stop and remove the containers created by Docker Compose, you can use the following command.
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ## Documentation
