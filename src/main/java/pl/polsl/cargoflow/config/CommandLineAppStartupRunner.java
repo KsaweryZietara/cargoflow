@@ -49,16 +49,17 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
             position.setName("mechanic");
             positionRepo.save(position);
         }
-
-        Employee employee = new Employee();
-        employee.setName(adminLogin);
-        employee.setSurname(adminLogin);
-        employee.setPesel("99999999999");
-        employee.setBirthDate(Date.valueOf(LocalDate.now()));
-        Credentials credentials = new Credentials(adminLogin, adminPassword);
-        employee.setCredentials(credentials);
-        Position position = positionRepo.findByName("admin").getFirst();
-        employee.setPosition(position);
-        employeeRepo.save(employee);
+        if (employeeRepo.findByName(adminLogin).isEmpty()) {
+            Employee employee = new Employee();
+            employee.setName(adminLogin);
+            employee.setSurname(adminLogin);
+            employee.setPesel("99999999999");
+            employee.setBirthDate(Date.valueOf(LocalDate.now()));
+            Credentials credentials = new Credentials(adminLogin, adminPassword);
+            employee.setCredentials(credentials);
+            Position position = positionRepo.findByName("admin").getFirst();
+            employee.setPosition(position);
+            employeeRepo.save(employee);
+        }
     }
 }
