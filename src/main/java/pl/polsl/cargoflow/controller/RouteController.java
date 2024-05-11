@@ -27,11 +27,11 @@ public class RouteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RouteResponse> getRouteById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         RouteResponse routeResponse = routeService.getById(id);
@@ -40,11 +40,11 @@ public class RouteController {
 
     @GetMapping
     public ResponseEntity<List<RouteResponse>> getAllRoutes(@RequestHeader("Authorization") String authHeader) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         List<RouteResponse> routeResponses = routeService.getAll();
@@ -53,11 +53,11 @@ public class RouteController {
 
     @PostMapping
     public ResponseEntity<RouteResponse> createRoute(@RequestHeader("Authorization") String authHeader, @RequestBody RouteRequest createRoute) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         RouteResponse routeResponse = routeService.save(createRoute);
@@ -66,11 +66,11 @@ public class RouteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<RouteResponse> updateRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody RouteRequest createRoute) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         RouteResponse routeResponse = routeService.update(id, createRoute);
@@ -79,11 +79,11 @@ public class RouteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoute(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         routeService.delete(id);

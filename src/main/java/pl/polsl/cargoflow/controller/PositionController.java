@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import pl.polsl.cargoflow.model.Employee;
 import pl.polsl.cargoflow.model.dto.PositionRequest;
 import pl.polsl.cargoflow.model.dto.PositionResponse;
 import pl.polsl.cargoflow.model.exception.UnauthorizedException;
@@ -26,8 +27,11 @@ public class PositionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PositionResponse> getPositionById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         PositionResponse positionResponse = positionService.getById(id);
@@ -36,8 +40,11 @@ public class PositionController {
 
     @GetMapping
     public ResponseEntity<List<PositionResponse>> getAllPositions(@RequestHeader("Authorization") String authHeader) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         List<PositionResponse> positionResponses = positionService.getAll();
@@ -46,8 +53,11 @@ public class PositionController {
 
     @PostMapping
     public ResponseEntity<PositionResponse> createPosition(@RequestHeader("Authorization") String authHeader, @RequestBody PositionRequest positionRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         PositionResponse positionResponse = positionService.save(positionRequest);
@@ -56,8 +66,11 @@ public class PositionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PositionResponse> updatePosition(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody PositionRequest positionRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         PositionResponse positionResponse = positionService.update(id, positionRequest);
@@ -66,8 +79,11 @@ public class PositionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePosition(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         positionService.delete(id);

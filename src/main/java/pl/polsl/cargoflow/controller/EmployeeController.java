@@ -27,8 +27,11 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeResponse> getEmployeeById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         EmployeeResponse employeeResponse = employeeService.getById(id);
@@ -37,7 +40,7 @@ public class EmployeeController {
 
     @GetMapping("/current")
     public ResponseEntity<EmployeeResponse> getCurrentEmployee(@RequestHeader("Authorization") String authHeader) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
@@ -46,27 +49,24 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<List<EmployeeResponse>> getAllEmployees(@RequestHeader("Authorization") String authHeader) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (isAuthenticated) {
-            List<EmployeeResponse> employeeResponses = employeeService.getAll();
-            return ResponseEntity.ok(employeeResponses);
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
         }
-
-        Employee employee = authService.authenticateEmployee(authHeader);
-        if (employee != null) {
-            if (employee.getPosition().getName().equals("koordynator")) {
-                List<EmployeeResponse> employeeResponses = employeeService.getAll();
-                return ResponseEntity.ok(employeeResponses);
-            }
+        if (!employee.getPosition().getName().equals("coordinator") && !employee.getPosition().getName().equals("admin")) {
+            throw new UnauthorizedException();
         }
-        
-        throw new UnauthorizedException();
+        List<EmployeeResponse> employeeResponses = employeeService.getAll();
+        return ResponseEntity.ok(employeeResponses);
     }
 
     @PostMapping
     public ResponseEntity<EmployeeResponse> createEmployee(@RequestHeader("Authorization") String authHeader, @RequestBody EmployeeRequest employeeRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         EmployeeResponse employeeResponse = employeeService.save(employeeRequest);
@@ -75,8 +75,11 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<EmployeeResponse> updateEmployee(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody EmployeeRequest employeeRequest) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         EmployeeResponse employeeResponse = employeeService.update(id, employeeRequest);
@@ -85,8 +88,11 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        boolean isAuthenticated = authService.authenticateAdmin(authHeader);
-        if (!isAuthenticated) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("admin")) {
             throw new UnauthorizedException();
         }
         employeeService.delete(id);

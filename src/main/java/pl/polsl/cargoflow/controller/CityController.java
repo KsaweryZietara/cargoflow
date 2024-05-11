@@ -35,11 +35,11 @@ public class CityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CityResponse> getCityById(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         CityResponse cityResponse = cityService.getById(id);
@@ -48,11 +48,11 @@ public class CityController {
 
     @GetMapping
     public ResponseEntity<List<CityResponse>> getAllCities(@RequestHeader("Authorization") String authHeader) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         List<CityResponse> cityResponses = cityService.getAll();
@@ -61,11 +61,11 @@ public class CityController {
 
     @PostMapping
     public ResponseEntity<CityResponse> createCity(@RequestHeader("Authorization") String authHeader, @RequestBody CityRequest cityRequest) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         CityResponse cityResponse = cityService.save(cityRequest);
@@ -74,11 +74,11 @@ public class CityController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CityResponse> updateCity(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody CityRequest cityRequest) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         CityResponse cityResponse = cityService.update(id, cityRequest);
@@ -87,11 +87,11 @@ public class CityController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCity(@RequestHeader("Authorization") String authHeader, @PathVariable Long id) {
-        Employee employee = authService.authenticateEmployee(authHeader);
+        Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
         }
-        if (!employee.getPosition().getName().equals("koordynator")) {
+        if (!employee.getPosition().getName().equals("coordinator")) {
             throw new UnauthorizedException();
         }
         cityService.delete(id);
