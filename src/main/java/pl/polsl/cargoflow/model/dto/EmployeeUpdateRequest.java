@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class EmployeeRequest {
+public class EmployeeUpdateRequest {
     private String name;
 
     private String surname;
@@ -19,10 +19,6 @@ public class EmployeeRequest {
     private String pesel;
 
     private Date birthDate;
-
-    private String login;
-
-    private String password;
     
     private Long positionId;
 

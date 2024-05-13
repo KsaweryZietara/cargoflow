@@ -54,7 +54,7 @@ public class Employee {
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     private List<DriverRoute> driverRoutes;
 
-    public Employee(EmployeeRequest employeeRequest, Position position, List<DrivingLicense> drivingLicenses, List<DriverRoute> driverRoutes) {
+    public Employee(EmployeeRequest employeeRequest, Position position, List<DrivingLicense> drivingLicenses) {
         this.name = employeeRequest.getName();
         this.surname = employeeRequest.getSurname();
         this.pesel = employeeRequest.getPesel();
@@ -62,6 +62,5 @@ public class Employee {
         this.credentials = new Credentials(employeeRequest.getLogin(), employeeRequest.getPassword());
         this.position = position;
         this.driverLicenses = drivingLicenses;
-        this.driverRoutes = driverRoutes;
     }
 }

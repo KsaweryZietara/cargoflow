@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import pl.polsl.cargoflow.model.Employee;
 import pl.polsl.cargoflow.model.dto.EmployeeRequest;
 import pl.polsl.cargoflow.model.dto.EmployeeResponse;
+import pl.polsl.cargoflow.model.dto.EmployeeUpdateRequest;
 import pl.polsl.cargoflow.model.exception.UnauthorizedException;
 import pl.polsl.cargoflow.service.AuthService;
 import pl.polsl.cargoflow.service.EmployeeService;
@@ -74,7 +75,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeResponse> updateEmployee(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody EmployeeRequest employeeRequest) {
+    public ResponseEntity<EmployeeResponse> updateEmployee(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody EmployeeUpdateRequest employeeRequest) {
         Employee employee = authService.authenticate(authHeader);
         if (employee == null) {
             throw new UnauthorizedException();
