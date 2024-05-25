@@ -11,6 +11,7 @@ import pl.polsl.cargoflow.model.dto.DriverRouteResponse;
 import pl.polsl.cargoflow.model.exception.UnauthorizedException;
 import pl.polsl.cargoflow.service.AuthService;
 import pl.polsl.cargoflow.service.DriverRouteService;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -115,5 +116,44 @@ public class DriverRouteController {
         }
         DriverRouteResponse driverRouteResponse = driverRouteService.completeDriverRoute(id, employee.getId(), request);
         return ResponseEntity.ok(driverRouteResponse);
+    }
+
+    @GetMapping("/report/vehicle/{id}")
+    public ResponseEntity<Double> getReportByVehicle(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("coordinator") && !employee.getPosition().getName().equals("mechanic")) {
+            throw new UnauthorizedException();
+        }
+        Double distance = driverRouteService.getReportByVehicle(id, startDate, endDate);
+        return ResponseEntity.ok(distance);
+    }
+
+    @GetMapping("/report/employee/{id}")
+    public ResponseEntity<Double> getReportByEmployee(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("coordinator")) {
+            throw new UnauthorizedException();
+        }
+        Double distance = driverRouteService.getReportByEmployee(id, startDate, endDate);
+        return ResponseEntity.ok(distance);
+    }
+
+    @GetMapping("/report/employee")
+    public ResponseEntity<Double> getEmployeeReport(@RequestHeader("Authorization") String authHeader, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+        Employee employee = authService.authenticate(authHeader);
+        if (employee == null) {
+            throw new UnauthorizedException();
+        }
+        if (!employee.getPosition().getName().equals("driver")) {
+            throw new UnauthorizedException();
+        }
+        Double distance = driverRouteService.getReportByEmployee(employee.getId(), startDate, endDate);
+        return ResponseEntity.ok(distance);
     }
 }

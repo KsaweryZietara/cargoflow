@@ -40,6 +40,7 @@ public class CityService {
         return cityRepo.findById(id)
                 .map(city -> {
                     city.setName(cityRequest.getName());
+                    city.setAddress(cityRequest.getAddress());
                     return cityRepo.save(city);
                 })
                 .map(CityResponse::new)

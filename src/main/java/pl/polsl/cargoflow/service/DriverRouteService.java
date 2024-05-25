@@ -1,5 +1,6 @@
 package pl.polsl.cargoflow.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -60,12 +61,28 @@ public class DriverRouteService {
         Employee employee = employeeRepo.findById(driverRouteRequest.getEmployeeId()).orElseThrow(() -> 
             new RuntimeException("Employee with id " + driverRouteRequest.getEmployeeId() + " not found")
         );
+        List<DriverRoute> driverRoutes = driverRouteRepo.findAllByEmployee(employee);
+        driverRoutes.stream().forEach(route -> {
+            if (!((route.getArrivalDate().isAfter(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isAfter(driverRouteRequest.getArrivalDate())) ||
+                (route.getArrivalDate().isBefore(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isBefore(driverRouteRequest.getArrivalDate())))
+            ) {
+                throw new RuntimeException("Employee with id " + driverRouteRequest.getEmployeeId() + " has a different route planned during this period");
+            }
+        });
         Vehicle vehicle = vehicleRepo.findById(driverRouteRequest.getVehicleId()).orElseThrow(() -> 
             new RuntimeException("Vehicle with id " + driverRouteRequest.getVehicleId() + " not found")
         );
         if (!vehicle.isOperational()) {
             throw new RuntimeException("Vehicle with id " + driverRouteRequest.getVehicleId() + " is not operational");
         }
+        List<DriverRoute> vehicleDriverRoutes = driverRouteRepo.findAllByVehicle(vehicle);
+        vehicleDriverRoutes.stream().forEach(route -> {
+            if (!((route.getArrivalDate().isAfter(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isAfter(driverRouteRequest.getArrivalDate())) ||
+                (route.getArrivalDate().isBefore(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isBefore(driverRouteRequest.getArrivalDate())))
+            ) {
+                throw new RuntimeException("Vehicle with id " + driverRouteRequest.getEmployeeId() + " has a different route planned during this period");
+            }
+        });
         Route route = routeRepo.findById(driverRouteRequest.getRouteId()).orElseThrow(() -> 
             new RuntimeException("Route with id " + driverRouteRequest.getRouteId() + " not found")
         );
@@ -77,9 +94,28 @@ public class DriverRouteService {
         Employee employee = employeeRepo.findById(driverRouteRequest.getEmployeeId()).orElseThrow(() -> 
             new RuntimeException("Employee with id " + driverRouteRequest.getEmployeeId() + " not found")
         );
+        List<DriverRoute> driverRoutes = driverRouteRepo.findAllByEmployee(employee);
+        driverRoutes.stream().forEach(route -> {
+            if (!((route.getArrivalDate().isAfter(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isAfter(driverRouteRequest.getArrivalDate())) ||
+                (route.getArrivalDate().isBefore(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isBefore(driverRouteRequest.getArrivalDate())))
+            ) {
+                throw new RuntimeException("Employee with id " + driverRouteRequest.getEmployeeId() + " has a different route planned during this period");
+            }
+        });
         Vehicle vehicle = vehicleRepo.findById(driverRouteRequest.getVehicleId()).orElseThrow(() -> 
             new RuntimeException("Vehicle with id " + driverRouteRequest.getVehicleId() + " not found")
         );
+        if (!vehicle.isOperational()) {
+            throw new RuntimeException("Vehicle with id " + driverRouteRequest.getVehicleId() + " is not operational");
+        }
+        List<DriverRoute> vehicleDriverRoutes = driverRouteRepo.findAllByVehicle(vehicle);
+        vehicleDriverRoutes.stream().forEach(route -> {
+            if (!((route.getArrivalDate().isAfter(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isAfter(driverRouteRequest.getArrivalDate())) ||
+                (route.getArrivalDate().isBefore(driverRouteRequest.getDepartureDate()) && route.getDepartureDate().isBefore(driverRouteRequest.getArrivalDate())))
+            ) {
+                throw new RuntimeException("Vehicle with id " + driverRouteRequest.getEmployeeId() + " has a different route planned during this period");
+            }
+        });
         Route route = routeRepo.findById(driverRouteRequest.getRouteId()).orElseThrow(() -> 
             new RuntimeException("Route with id " + driverRouteRequest.getRouteId() + " not found")
         );
@@ -116,5 +152,29 @@ public class DriverRouteService {
 
     public void delete(Long id) {
         driverRouteRepo.deleteById(id);
+    }
+
+    public Double getReportByVehicle(Long id, LocalDateTime startDate, LocalDateTime endDate){
+        Vehicle vehicle = vehicleRepo.findById(id).orElseThrow(() -> 
+            new RuntimeException("Vehicle with id " + id + " not found")
+        );
+        Double totalDistance = driverRouteRepo.findAllByVehicle(vehicle)
+            .stream()
+            .filter(route -> route.isCompleted() && route.getDepartureDate().isAfter(startDate) && route.getArrivalDate().isBefore(endDate))
+            .mapToDouble(route -> route.getRoute().getDistance())
+            .sum();
+        return totalDistance;
+    }
+
+    public Double getReportByEmployee(Long id, LocalDateTime startDate, LocalDateTime endDate){
+        Employee employee = employeeRepo.findById(id).orElseThrow(() -> 
+            new RuntimeException("Employee with id " + id + " not found")
+        );
+        Double totalDistance = driverRouteRepo.findAllByEmployee(employee)
+            .stream()
+            .filter(route -> route.isCompleted() && route.getDepartureDate().isAfter(startDate) && route.getArrivalDate().isBefore(endDate))
+            .mapToDouble(route -> route.getRoute().getDistance())
+            .sum();
+        return totalDistance;
     }
 }

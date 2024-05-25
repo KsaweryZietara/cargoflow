@@ -11,4 +11,6 @@ import lombok.Setter;
 @Setter
 public class CityRequest {
     private String name;
+
+    private String address;
 }

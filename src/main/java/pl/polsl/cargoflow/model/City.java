@@ -24,6 +24,9 @@ public class City {
     @NotBlank
     private String name;
 
+    @NotBlank
+    private String address;
+
     @OneToMany(mappedBy = "departureCity")
     private List<Route> departureRoute;
 
@@ -32,5 +35,6 @@ public class City {
 
     public City(CityRequest cityRequest) {
         this.name = cityRequest.getName();
+        this.address = cityRequest.getAddress();
     }
 }

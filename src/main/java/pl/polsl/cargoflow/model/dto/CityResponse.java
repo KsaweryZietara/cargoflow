@@ -15,8 +15,11 @@ public class CityResponse {
 
     private String name;
 
+    private String address;
+
     public CityResponse(City city) {
         this.id = city.getId();
         this.name = city.getName();
+        this.address = city.getAddress();
     }
 }
