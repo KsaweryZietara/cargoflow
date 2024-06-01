@@ -27,6 +27,16 @@ docker compose up -d
 docker compose down
 ```
 
+## React application
+The React application is available on port 3000. You can access it by navigating to:
+```
+http://localhost:3000
+```
+
+#### Default Admin Credentials
+- Username: `admin`
+- Password: `admin`
+
 ## Documentation
 For comprehensive documentation of API endpoints and functionalities, please refer to Swagger documentation.
 Swagger provides an interactive interface where you can explore endpoints, parameters, request/response payloads, and even test API 
