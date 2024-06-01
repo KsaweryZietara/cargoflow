@@ -1,0 +1,49 @@
+import .license-tile {
+    border: 1px solid white;
+    padding: 5px 10px;
+
+    &:hover {
+        filter: brightness(0.8);
+    }
+}
+
+.picker {
+    position: absolute;
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+    padding: 15px;
+    border-radius: 0.8rem;
+
+    background-color: rgb(25, 25, 25);
+
+    .picker-items {
+        .picker-item {
+            display: flex;
+            width: 100%;
+            border: 1px solid rgb(109, 109, 109);
+            padding: 10px 10px;
+
+            .btn-wrapper {
+                margin-left: auto;
+            }
+        }
+
+        .license-name,
+        .license-pick {
+            margin-right: 1rem;
+        }
+    }
+
+    .picker-input {
+        margin-top: auto;
+        display: flex;
+        justify-content: center;
+        input {
+            margin-right: 1rem;
+        }
+    }
+}

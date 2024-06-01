@@ -22,3 +22,8 @@ services:
       - POSTGRES_DB=cargoflow
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
+  web:
+    image: ghcr.io/ksaweryzietara/cargoflow-web:latest
+    container_name: web
+    ports:
+      - 3000:3000
