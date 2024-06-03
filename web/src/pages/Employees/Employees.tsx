@@ -26,7 +26,7 @@ export default function Employees() {
 
     useEffect(() => {
         getEmployees().then((employees) => {
-            setEmployees(employees);
+            setEmployees(employees.filter(employee => employee.name !== "admin"));
         });
     }, []);
 
